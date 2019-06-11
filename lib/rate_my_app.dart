@@ -85,14 +85,14 @@ class RateMyApp {
   /// Shows the rate dialog.
   Future<void> showRateDialog(
     BuildContext context, {
-    RichText title = RichText(text: TextSpan(text: 'Rate this app')),
-    RichText message = RichText(
+    RichText title = const RichText(text: TextSpan(text: 'Rate this app')),
+    RichText message = const RichText(
         text: TextSpan(
             text: 'If you like this app, please take a little bit of your time to review it !\nIt really '
                 'helps us and it shouldn\'t take you more than one minute.')),
-    RichText rateButton = RichText(text: TextSpan(tex: 'RATE')),
-    RichText noButton = RichText(text: TextSpan(text: 'NO THANKS')),
-    RichText laterButton = RichText(text: TextSpan(text: 'MAYBE LATER')),
+    RichText rateButton = const RichText(text: TextSpan(text: 'RATE')),
+    RichText noButton = const RichText(text: TextSpan(text: 'NO THANKS')),
+    RichText laterButton = const RichText(text: TextSpan(text: 'MAYBE LATER')),
   }) async {
     if (Platform.isIOS && await _CHANNEL.invokeMethod('canRequestReview')) {
       return _CHANNEL.invokeMethod('requestReview');
@@ -104,30 +104,30 @@ class RateMyApp {
 /// The Android rate my app dialog.
 class RateMyAppDialog extends StatelessWidget {
   /// The dialog's message.
-  final String _message;
+  final RichText _message;
 
   /// Creates a new rate my app dialog.
   RateMyAppDialog(this._message);
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
-        child: Text(_message),
+        child: _message,
       );
 
   /// Opens the dialog.
-  static Future<void> openDialog(RateMyApp rateMyApp, BuildContext context, String title, String message,
-          String rateButton, String noButton, String laterButton) async =>
+  static Future<void> openDialog(RateMyApp rateMyApp, BuildContext context, RichText title, RichText message,
+          RichText rateButton, RichText noButton, RichText laterButton) async =>
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text(title),
+              title: title,
               content: RateMyAppDialog(message),
               actions: [
                 Wrap(
                   alignment: WrapAlignment.end,
                   children: [
                     FlatButton(
-                      child: Text(rateButton),
+                      child: rateButton,
                       onPressed: () {
                         rateMyApp.doNotOpenAgain = true;
                         Navigator.pop(context);
@@ -137,7 +137,7 @@ class RateMyAppDialog extends StatelessWidget {
                       },
                     ),
                     FlatButton(
-                      child: Text(laterButton),
+                      child: laterButton,
                       onPressed: () {
                         rateMyApp.baseLaunchDate.add(Duration(
                           days: rateMyApp.remindDays,
@@ -147,7 +147,7 @@ class RateMyAppDialog extends StatelessWidget {
                       },
                     ),
                     FlatButton(
-                      child: Text(noButton),
+                      child: noButton,
                       onPressed: () {
                         rateMyApp.doNotOpenAgain = true;
                         rateMyApp.save().then((v) => Navigator.pop(context));
