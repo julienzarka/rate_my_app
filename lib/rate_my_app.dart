@@ -52,7 +52,8 @@ class RateMyApp {
   /// Initializes the plugin (loads base launch date, app launches and whether the dialog should not be opened again).
   Future<void> init() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    baseLaunchDate = DateTime.fromMillisecondsSinceEpoch((preferences.getInt('baseLaunchDate') ?? DateTime.now().millisecondsSinceEpoch));
+    baseLaunchDate = DateTime.fromMillisecondsSinceEpoch(
+        (preferences.getInt('baseLaunchDate') ?? DateTime.now().millisecondsSinceEpoch));
     launches = (preferences.getInt('launches') ?? 0) + 1;
     doNotOpenAgain = preferences.getBool('doNotOpenAgain') ?? false;
     await save();
@@ -75,16 +76,23 @@ class RateMyApp {
   }
 
   /// Whether the dialog should be opened.
-  bool get shouldOpenDialog => !doNotOpenAgain && (DateTime.now().millisecondsSinceEpoch - baseLaunchDate.millisecondsSinceEpoch) / (1000 * 60 * 60 * 24) >= minDays && launches >= minLaunches;
+  bool get shouldOpenDialog =>
+      !doNotOpenAgain &&
+      (DateTime.now().millisecondsSinceEpoch - baseLaunchDate.millisecondsSinceEpoch) / (1000 * 60 * 60 * 24) >=
+          minDays &&
+      launches >= minLaunches;
 
   /// Shows the rate dialog.
   Future<void> showRateDialog(
     BuildContext context, {
-    RichText title = 'Rate this app',
-    RichText message = 'If you like this app, please take a little bit of your time to review it !\nIt really helps us and it shouldn\'t take you more than one minute.',
-    RichText rateButton = 'RATE',
-    RichText noButton = 'NO THANKS',
-    RichText laterButton = 'MAYBE LATER',
+    RichText title = RichText(text: TextSpan(text: 'Rate this app')),
+    RichText message = RichText(
+        text: TextSpan(
+            text: 'If you like this app, please take a little bit of your time to review it !\nIt really '
+                'helps us and it shouldn\'t take you more than one minute.')),
+    RichText rateButton = RichText(text: TextSpan(tex: 'RATE')),
+    RichText noButton = RichText(text: TextSpan(text: 'NO THANKS')),
+    RichText laterButton = RichText(text: TextSpan(text: 'MAYBE LATER')),
   }) async {
     if (Platform.isIOS && await _CHANNEL.invokeMethod('canRequestReview')) {
       return _CHANNEL.invokeMethod('requestReview');
@@ -107,7 +115,9 @@ class RateMyAppDialog extends StatelessWidget {
       );
 
   /// Opens the dialog.
-  static Future<void> openDialog(RateMyApp rateMyApp, BuildContext context, String title, String message, String rateButton, String noButton, String laterButton) async => await showDialog(
+  static Future<void> openDialog(RateMyApp rateMyApp, BuildContext context, String title, String message,
+          String rateButton, String noButton, String laterButton) async =>
+      await showDialog(
         context: context,
         builder: (context) => AlertDialog(
               title: Text(title),
