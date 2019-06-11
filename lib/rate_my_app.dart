@@ -80,11 +80,11 @@ class RateMyApp {
   /// Shows the rate dialog.
   Future<void> showRateDialog(
     BuildContext context, {
-    String title = 'Rate this app',
-    String message = 'If you like this app, please take a little bit of your time to review it !\nIt really helps us and it shouldn\'t take you more than one minute.',
-    String rateButton = 'RATE',
-    String noButton = 'NO THANKS',
-    String laterButton = 'MAYBE LATER',
+    RichText title = 'Rate this app',
+    RichText message = 'If you like this app, please take a little bit of your time to review it !\nIt really helps us and it shouldn\'t take you more than one minute.',
+    RichText rateButton = 'RATE',
+    RichText noButton = 'NO THANKS',
+    RichText laterButton = 'MAYBE LATER',
   }) async {
     if (Platform.isIOS && await _CHANNEL.invokeMethod('canRequestReview')) {
       return _CHANNEL.invokeMethod('requestReview');
