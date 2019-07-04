@@ -85,14 +85,11 @@ class RateMyApp {
   /// Shows the rate dialog.
   Future<void> showRateDialog(
     BuildContext context, {
-    RichText title = const RichText(text: TextSpan(text: 'Rate this app')),
-    RichText message = const RichText(
-        text: TextSpan(
-            text: 'If you like this app, please take a little bit of your time to review it !\nIt really '
-                'helps us and it shouldn\'t take you more than one minute.')),
-    RichText rateButton = const RichText(text: TextSpan(text: 'RATE')),
-    RichText noButton = const RichText(text: TextSpan(text: 'NO THANKS')),
-    RichText laterButton = const RichText(text: TextSpan(text: 'MAYBE LATER')),
+    RichText title,
+    RichText message,
+    RichText rateButton,
+    RichText noButton,
+    RichText laterButton,
   }) async {
     if (Platform.isIOS && await _CHANNEL.invokeMethod('canRequestReview')) {
       return _CHANNEL.invokeMethod('requestReview');
@@ -120,42 +117,42 @@ class RateMyAppDialog extends StatelessWidget {
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: title,
-              content: RateMyAppDialog(message),
-              actions: [
-                Wrap(
-                  alignment: WrapAlignment.end,
-                  children: [
-                    FlatButton(
-                      child: rateButton,
-                      onPressed: () {
-                        rateMyApp.doNotOpenAgain = true;
-                        Navigator.pop(context);
-                        return RateMyApp._CHANNEL.invokeMethod('launchStore', {
-                          'appId': Platform.isIOS ? rateMyApp.appStoreIdentifier : rateMyApp.googlePlayIdentifier,
-                        });
-                      },
-                    ),
-                    FlatButton(
-                      child: laterButton,
-                      onPressed: () {
-                        rateMyApp.baseLaunchDate.add(Duration(
-                          days: rateMyApp.remindDays,
-                        ));
-                        rateMyApp.launches += rateMyApp.remindLaunches;
-                        rateMyApp.save().then((v) => Navigator.pop(context));
-                      },
-                    ),
-                    FlatButton(
-                      child: noButton,
-                      onPressed: () {
-                        rateMyApp.doNotOpenAgain = true;
-                        rateMyApp.save().then((v) => Navigator.pop(context));
-                      },
-                    ),
-                  ],
+          title: title,
+          content: RateMyAppDialog(message),
+          actions: [
+            Wrap(
+              alignment: WrapAlignment.end,
+              children: [
+                FlatButton(
+                  child: rateButton,
+                  onPressed: () {
+                    rateMyApp.doNotOpenAgain = true;
+                    Navigator.pop(context);
+                    return RateMyApp._CHANNEL.invokeMethod('launchStore', {
+                      'appId': Platform.isIOS ? rateMyApp.appStoreIdentifier : rateMyApp.googlePlayIdentifier,
+                    });
+                  },
+                ),
+                FlatButton(
+                  child: laterButton,
+                  onPressed: () {
+                    rateMyApp.baseLaunchDate.add(Duration(
+                      days: rateMyApp.remindDays,
+                    ));
+                    rateMyApp.launches += rateMyApp.remindLaunches;
+                    rateMyApp.save().then((v) => Navigator.pop(context));
+                  },
+                ),
+                FlatButton(
+                  child: noButton,
+                  onPressed: () {
+                    rateMyApp.doNotOpenAgain = true;
+                    rateMyApp.save().then((v) => Navigator.pop(context));
+                  },
                 ),
               ],
             ),
+          ],
+        ),
       );
 }
